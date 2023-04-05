@@ -1,12 +1,11 @@
 package com.library.books.db;
 
+import com.library.books.BookNotFoundException;
 import com.library.books.models.BooksEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class MemoryLibrary implements DatabaseInterface {
@@ -17,23 +16,46 @@ public class MemoryLibrary implements DatabaseInterface {
         this.library = new HashMap<String, BooksEntity>();
     };
 
+    private String libraryHash(String title, String author) {
+        String libraryCode = String.format("%s-%s", title, author);
+        String id = Base64.getEncoder().encodeToString(libraryCode.getBytes());
+
+        return id;
+    }
+
     // base64 encoded string id
-    public BooksEntity getBook(String id) {
+    public BooksEntity getBook(String id) throws BookNotFoundException {
         BooksEntity retrievedBook = library.get(id);
         if (retrievedBook == null) {
-            // TODO: log this
-
+            throw new BookNotFoundException("Book not found");
         }
         return retrievedBook;
     };
 
-//    public int updateBook(int id, BooksEntity book) {
-//        // TODO: find book in hashmap, modify, put back in map
-//        return "";
-//    };
-//    public void deleteBook(String title, String author) {};
+    public String updateBook(String id, BooksEntity book) {
+        // remove the book at the previous id
+        try {
+            deleteBook(id);
+        } catch(BookNotFoundException e) {
+            // log and return null
+            System.out.printf("while updating: %s", e);
+            return null;
+        }
+
+        // then add the new book
+        String newId = createBook(book);
+        return newId;
+    };
+
+    public void deleteBook(String id) throws BookNotFoundException {
+        // remove the entry from the hashmap
+        BooksEntity removedBook = library.remove(id);
+        if (removedBook == null) {
+            throw new BookNotFoundException("Book not found while attemping to delete");
+        }
+    };
+
     public HashMap<String, BooksEntity> getAllBooks() {
-//        Set<BooksEntity> allBooks = library.values().stream().collect(Collectors.toSet());
 
         return library;
     };
@@ -53,10 +75,9 @@ public class MemoryLibrary implements DatabaseInterface {
             return null;
         }
 
-        String libraryCode = String.format("%s-%s", book.title, book.author);
-        String id = Base64.getEncoder().encodeToString(libraryCode.getBytes());
+        String id = libraryHash(book.title, book.author);
 
-        library.put(id, book);
+        library.putIfAbsent(id, book);
 
         return id;
 

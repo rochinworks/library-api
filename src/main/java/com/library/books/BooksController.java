@@ -30,7 +30,6 @@ public class BooksController {
 
     @GetMapping("/books")
     public HashMap<String, BooksEntity> getBooks() {
-//        Set<BooksEntity> books = bookDao.getAllBooks();
         HashMap<String, BooksEntity> books = bookDao.getAllBooks();
 
         return books;
@@ -38,12 +37,14 @@ public class BooksController {
 
     @GetMapping("/books/{id}")
     public BooksEntity getBookById(@PathVariable("id") String id) {
-        BooksEntity book = bookDao.getBook(id);
-        if (book == null) {
-            logger.error("book was not found");
+        try {
+            BooksEntity book = bookDao.getBook(id);
+            return book;
+        } catch(BookNotFoundException e) {
+            // TODO: this doesn't return a 400
+            logger.error(e.getMessage());
+            return null;
         }
-
-        return book;
     }
 
     @PostMapping("/books")
@@ -53,15 +54,21 @@ public class BooksController {
         return libraryCode;
     }
 
-//    @PutMapping("/books/{id}")
-//    public int updateBook(@PathVariable("id") int id, @RequestBody BooksEntity bookToUpdate) {
-//        int libraryCode = bookDao.updateBook(id, bookToUpdate);
-//
-//        return libraryCode;
-//    }
+    @PutMapping("/books/{id}")
+    public String updateBook(@PathVariable("id") String id, @RequestBody BooksEntity bookToUpdate) {
+        String libraryCode = bookDao.updateBook(id, bookToUpdate);
 
-//    @DeleteMapping("/books/{id}")
-//    public Boolean deleteBook(int id) {
-//        return true;
-//    }
+        return libraryCode;
+    }
+
+    @DeleteMapping("/books/{id}")
+    public void deleteBook(@PathVariable("id") String id) {
+        try {
+
+            bookDao.deleteBook(id);
+        } catch(BookNotFoundException err) {
+
+            logger.error(err.getMessage());
+        }
+    }
 }
