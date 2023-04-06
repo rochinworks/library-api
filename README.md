@@ -1,5 +1,10 @@
 ## Running the project
-`./gradlew run`
+`./gradlew build`
+`java -jar ./build/lib/books-0.0.1-SNAPSHOT.jar`
+
+### Running with docker
+`docker build -t {tag} .`
+`docker run -it {tag}`
 
 ## Endpoints
 
