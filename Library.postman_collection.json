@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "8800d111-3190-4dfc-8d6d-5c93a3318788",
+		"name": "Library",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23722681"
+	},
+	"item": [
+		{
+			"name": "Create - Book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"one for the ages\",\n    \"author\": \"fat cat mcGee\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/books",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Book by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/books/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"books",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "YSBuZXcgdGl0bGUtc3RpbGwgZmF0IGNhdA=="
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - All Books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/books",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put - Update Book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"a new title\",\n    \"author\": \"still fat cat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/books/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"books",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "b25lIGZvciB0aGUgYWdlcy1mYXQgY2F0IG1jR2Vl"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEL - Delete Book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/books/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"books",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "b25lIGZvciB0aGUgYWdlcy1mYXQgY2F0IG1jR2Vl"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
