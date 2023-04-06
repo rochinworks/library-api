@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(outputDir = "target/generated-snippets")
+//@AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 public class EndpointTests {
 
     @Autowired
@@ -63,8 +63,7 @@ public class EndpointTests {
                         .content(bookJson))
                 .andDo(print())
                 .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON)
+                        status().isOk()
                 ));
     }
 

@@ -1,10 +1,22 @@
 package com.library.books.models;
 
-import java.util.UUID;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "books")
 public class BooksEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long bid;
     public String title;
     public String author;
+    public Long getBid() {
+        return bid;
+    }
+    public void setBid(Long bid) {
+        this.bid = bid;
+    }
     public String getTitle() {
         return title;
     }

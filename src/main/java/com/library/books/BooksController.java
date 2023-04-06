@@ -1,6 +1,7 @@
 package com.library.books;
 
 import com.library.books.db.MemoryLibrary;
+import com.library.books.db.PostgresLibrary;
 import com.library.books.models.BooksEntity;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +11,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class BooksController {
     @Autowired
     public MemoryLibrary bookDao;
 
+    @Autowired
+    public PostgresLibrary persistentBookDao;
+
     private Logger logger;
 
-    public BooksController(MemoryLibrary bookDao) {
+    public BooksController(MemoryLibrary bookDao, PostgresLibrary persistentBookDao) {
         this.bookDao = bookDao;
+        this.persistentBookDao = persistentBookDao;
         this.logger = LoggerFactory.getLogger(BooksController.class);
     }
 
@@ -29,8 +35,10 @@ public class BooksController {
     }
 
     @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HashMap<String, BooksEntity> getBooks() {
-        HashMap<String, BooksEntity> books = bookDao.getAllBooks();
+//    public HashMap<String, BooksEntity> getBooks() {
+      public List<BooksEntity> getBooks() {
+//        HashMap<String, BooksEntity> books = bookDao.getAllBooks();
+        List<BooksEntity> books = persistentBookDao.findAll();
 
         return books;
     }
