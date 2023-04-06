@@ -2,14 +2,14 @@ package com.library.books;
 
 import com.library.books.db.MemoryLibrary;
 import com.library.books.models.BooksEntity;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Set;
 
 @RestController
 public class BooksController {
@@ -28,33 +28,38 @@ public class BooksController {
         return "Spring boot up and running";
     }
 
-    @GetMapping("/books")
+    @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
     public HashMap<String, BooksEntity> getBooks() {
         HashMap<String, BooksEntity> books = bookDao.getAllBooks();
 
         return books;
     }
 
-    @GetMapping("/books/{id}")
-    public BooksEntity getBookById(@PathVariable("id") String id) {
+    @GetMapping(value = "/books/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BooksEntity getBookById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
             BooksEntity book = bookDao.getBook(id);
             return book;
         } catch(BookNotFoundException e) {
             // TODO: this doesn't return a 400
             logger.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
     }
 
-    @PostMapping("/books")
+    @PostMapping(value = "/books",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public String createBook(@RequestBody BooksEntity bookToAdd) {
         String libraryCode = bookDao.createBook(bookToAdd);
 
         return libraryCode;
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping(value = "/books/{id}",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public String updateBook(@PathVariable("id") String id, @RequestBody BooksEntity bookToUpdate) {
         String libraryCode = bookDao.updateBook(id, bookToUpdate);
 
@@ -62,13 +67,14 @@ public class BooksController {
     }
 
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@PathVariable("id") String id) {
+    public void deleteBook(@PathVariable("id") String id, HttpServletResponse response) {
         try {
 
             bookDao.deleteBook(id);
-        } catch(BookNotFoundException err) {
+        } catch(BookNotFoundException e) {
 
-            logger.error(err.getMessage());
+            logger.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 }
