@@ -1,6 +1,5 @@
 package com.library.books;
 
-import com.library.books.db.MemoryLibrary;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

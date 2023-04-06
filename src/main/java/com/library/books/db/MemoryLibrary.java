@@ -1,16 +1,21 @@
 package com.library.books.db;
 
 import com.library.books.BookNotFoundException;
+import com.library.books.BooksController;
 import com.library.books.models.BooksEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class MemoryLibrary implements DatabaseInterface {
     // hashmap of string value of title + author to the book entity
     public HashMap<String, BooksEntity> library;
+    private Logger logger = LoggerFactory.getLogger(BooksController.class);
 
     public MemoryLibrary() {
         this.library = new HashMap<String, BooksEntity>();
@@ -37,8 +42,7 @@ public class MemoryLibrary implements DatabaseInterface {
         try {
             deleteBook(id);
         } catch(BookNotFoundException e) {
-            // log and return null
-            System.out.printf("while updating: %s", e);
+            logger.error("while updating: %s", e);
             return null;
         }
 
@@ -51,7 +55,7 @@ public class MemoryLibrary implements DatabaseInterface {
         // remove the entry from the hashmap
         BooksEntity removedBook = library.remove(id);
         if (removedBook == null) {
-            throw new BookNotFoundException("Book not found while attemping to delete");
+            throw new BookNotFoundException("Book not found while attempting to delete");
         }
     };
 
@@ -61,20 +65,6 @@ public class MemoryLibrary implements DatabaseInterface {
     };
 
     public String createBook(BooksEntity book) {
-        if (book == null) {
-            // TODO: log this
-            return null;
-        }
-
-        if (book.author == null ) {
-            // TODO: log this
-            return null;
-        }
-        if (book.title == null) {
-            // TODO: log this
-            return null;
-        }
-
         String id = libraryHash(book.title, book.author);
 
         library.putIfAbsent(id, book);

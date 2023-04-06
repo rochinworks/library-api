@@ -41,7 +41,6 @@ public class BooksController {
             BooksEntity book = bookDao.getBook(id);
             return book;
         } catch(BookNotFoundException e) {
-            // TODO: this doesn't return a 400
             logger.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -51,7 +50,23 @@ public class BooksController {
     @PostMapping(value = "/books",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createBook(@RequestBody BooksEntity bookToAdd) {
+    public String createBook(@RequestBody BooksEntity bookToAdd, HttpServletResponse response) {
+        if (bookToAdd == null) {
+            logger.error("book was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+        if (bookToAdd.author == null ) {
+            logger.error("author was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+        if (bookToAdd.title == null) {
+            logger.error("title was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+
         String libraryCode = bookDao.createBook(bookToAdd);
 
         return libraryCode;
@@ -60,7 +75,23 @@ public class BooksController {
     @PutMapping(value = "/books/{id}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updateBook(@PathVariable("id") String id, @RequestBody BooksEntity bookToUpdate) {
+    public String updateBook(@PathVariable("id") String id, @RequestBody BooksEntity bookToUpdate, HttpServletResponse response) {
+        if (bookToUpdate == null) {
+            logger.error("book was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+        if (bookToUpdate.author == null ) {
+            logger.error("author was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+        if (bookToUpdate.title == null) {
+            logger.error("title was null");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+
         String libraryCode = bookDao.updateBook(id, bookToUpdate);
 
         return libraryCode;

@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.library.books.db.MemoryLibrary;
 import com.library.books.models.BooksEntity;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+
+//import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 public class EndpointTests {
 
     @Autowired
@@ -58,6 +61,7 @@ public class EndpointTests {
                 .perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookJson))
+                .andDo(print())
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON)
@@ -84,9 +88,11 @@ public class EndpointTests {
                 .andReturn();
 
         assertThat(this.mockMvc.perform(get("/books/{id}", result))
+                .andDo(print())
                 .andExpectAll(
                         status().isOk()
                 ));
+//                .andDo(document()));
     }
 
     @Test
@@ -108,6 +114,7 @@ public class EndpointTests {
                 .andReturn();
 
         assertThat(this.mockMvc.perform(delete("/books/{id}", result))
+                .andDo(print())
                 .andExpectAll(
                         status().isOk()
                 ));
@@ -147,6 +154,7 @@ public class EndpointTests {
 
         // check we can get the updated result
         assertThat(this.mockMvc.perform(get("/books/{id}", updateResult))
+                .andDo(print())
                 .andExpectAll(
                         status().isOk()
                 ));
@@ -182,6 +190,7 @@ public class EndpointTests {
                 .andReturn();
 
         assertThat(this.mockMvc.perform(get("/books"))
+                .andDo(print())
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON)
